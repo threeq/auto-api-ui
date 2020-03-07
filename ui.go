@@ -51,7 +51,8 @@ func moduleHandle(module string, fileServer http.Handler) func(writer http.Respo
 			tpl := module + strings.Replace(path.Clean(uriPath), ".html", "", 1)
 			err := renderTpl(tpl, data, writer)
 			if err != nil {
-				log.Printf("%s render error： %v", indexTpl, err)
+				log.Printf("%s render error： %v", tpl, err)
+				fileServer.ServeHTTP(writer, request)
 			}
 			return
 		}
