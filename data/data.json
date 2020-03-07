@@ -1,14 +1,9 @@
 {
   "meta": [
     {
-      "name": "跟踪服务",
-      "type": "swagger",
-      "url": "http://micro-track.vchangyi.com/micro-tracker/api/v1/swagger"
-    },
-    {
       "name": "demo",
-      "type": "swagger",
-      "url": "https://petstore.swagger.io/v2/swagger.json"
+      "url": "https://petstore.swagger.io/v2/swagger.json",
+      "type": "swagger"
     }
   ]
 }

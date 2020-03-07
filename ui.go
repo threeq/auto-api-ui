@@ -26,17 +26,18 @@ func initUI(router *httprouter.Router) {
 }
 
 func confUiRouter(uiModules []string, router *httprouter.Router) {
-	fileServer := http.FileServer(http.Dir(Args.UIPath))
+	fileServer := http.StripPrefix(Args.Path, http.FileServer(http.Dir(Args.UIPath)))
 	for i := 0; i < len(uiModules); i++ {
 		module := uiModules[i]
-		router.Handle("GET", "/"+module+"/*uriPath", moduleHandle(module, fileServer))
+		route := path.Clean(Args.Path + "/" + module + "/*uriPath")
+		router.Handle("GET", route, moduleHandle(module, fileServer))
 	}
 }
 
 func moduleHandle(module string, fileServer http.Handler) func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		data := map[string]interface{}{
-			"Urls": store.APIs(module),
+			"Urls": append([]*store.DocDesc{apiDocDesc}, store.APIs(module)...),
 		}
 		indexTpl := module + "/index"
 		uriPath := params.ByName("uriPath")
@@ -54,6 +55,7 @@ func moduleHandle(module string, fileServer http.Handler) func(writer http.Respo
 			}
 			return
 		}
+
 		fileServer.ServeHTTP(writer, request)
 	}
 }
